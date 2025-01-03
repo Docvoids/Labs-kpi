@@ -20,12 +20,29 @@ async def process_data_stream(filename="large_data.txt", chunk_size=1024):
             processed_chunk = await process_data_line(chunk)
             yield processed_chunk
 
+async def process_data_async_iterator(filename="large_data.txt", chunk_size=1024):
+    async def data_iterator():
+        async with aiofiles.open(filename, 'r') as f:
+            async for line in f:
+                yield line.strip()
+
+    async def process_item(item):
+        await asyncio.sleep(random.uniform(0.01, 0.1))
+        return f"Async Iterator Processed: {item}"
+
+    async for item in data_iterator():
+        yield await process_item(item)
+
 async def main():
     start_time = time.time()
     await generate_large_data()
 
     print("\n--- Processing with Async Stream ---")
     async for processed_item in process_data_stream():
+        print(processed_item)
+
+    print("\n--- Processing with Async Iterator ---")
+    async for processed_item in process_data_async_iterator():
         print(processed_item)
 
     end_time = time.time()
