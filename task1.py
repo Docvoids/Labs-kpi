@@ -45,3 +45,17 @@ async def async_some(
         return False
     except StopAsyncIteration:
         return True
+
+async def async_find(
+    predicate: Callable[[T], Coroutine[Any, Any, bool]],
+    data: List[T]
+) -> T | None:
+    async def check(item):
+        if await predicate(item):
+            return item
+        return None
+    for item in data:
+        result = await check(item)
+        if result is not None:
+            return result
+    return None
