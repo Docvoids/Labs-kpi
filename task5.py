@@ -25,3 +25,24 @@ class Entity:
 
     async def handle_message(self, data):
         print(f"{self.name}: Received message: {data}")
+
+async def entity_a_handler(data):
+    print(f"Entity A handler received data: {data}")
+
+async def entity_b_handler(data):
+    print(f"Entity B handler received data: {data}")
+
+async def main():
+    bus = MessageBus()
+    entity_a = Entity("Entity A", bus)
+    entity_b = Entity("Entity B", bus)
+
+    # Subscribe handlers to specific message types
+    await bus.subscribe("event.user.created", entity_a_handler)
+    await bus.subscribe("event.order.placed", entity_b_handler)
+
+    await entity_a.publish_message("event.user.created", {"user_id": 123, "username": "test_user"})
+    await entity_b.publish_message("event.order.placed", {"order_id": 456, "total": 100})
+
+if __name__ == "__main__":
+    asyncio.run(main())
