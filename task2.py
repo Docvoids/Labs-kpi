@@ -26,6 +26,14 @@ async def use_case_promise():
     print(f"Promise: Final processed data: {processed_data}")
     print("-" * 20)
 
+async def use_case_promise_parallel():
+    print("Promise Parallel Use Case:")
+    item_ids = [1, 2, 3]
+    processing_tasks = [process_data_promise(item_id) for item_id in item_ids]
+    results = await asyncio.gather(*processing_tasks)
+    print(f"Promise: Parallel processed data: {results}")
+    print("-" * 20)
+
 async def fetch_data_async_await(item_id):
     print(f"Async/Await: Starting to fetch data for item {item_id}")
     await asyncio.sleep(random.uniform(1, 3))
@@ -45,9 +53,19 @@ async def use_case_async_await():
     print(f"Async/Await: Final processed data: {processed_data}")
     print("-" * 20)
 
+async def use_case_async_await_parallel():
+    print("Async/Await Parallel Use Case:")
+    item_ids = [4, 5, 6]
+    processing_tasks = [process_data_async_await(item_id) for item_id in item_ids]
+    results = await asyncio.gather(*processing_tasks)
+    print(f"Async/Await: Parallel processed data: {results}")
+    print("-" * 20)
+
 async def main():
     await use_case_promise()
     await use_case_async_await()
+    await use_case_promise_parallel()
+    await use_case_async_await_parallel()
 
 if __name__ == "__main__":
     asyncio.run(main())
