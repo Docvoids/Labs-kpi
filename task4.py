@@ -10,6 +10,10 @@ async def generate_large_data(filename="large_data.txt", num_lines=1000):
             await f.write(data)
     print(f"Generated {filename} with {num_lines} lines.")
 
+async def process_data_line(line: str):
+    await asyncio.sleep(random.uniform(0.01, 0.1))
+    return f"Processed: {line.strip()}"
+
 async def main():
     start_time = time.time()
     await generate_large_data()
