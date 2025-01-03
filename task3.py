@@ -13,6 +13,15 @@ class AbortController:
 
 async def my_async_task(controller):
     print("Task started")
+    for i in range(5):
+        print(f"Task working: {i}")
+        try:
+            await asyncio.sleep(1)
+            await asyncio.wait_for(controller.signal(), timeout=0.001)
+            print("Task received abort signal")
+            break
+        except asyncio.TimeoutError:
+            pass
     print("Task finished")
 
 async def main():
