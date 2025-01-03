@@ -27,6 +27,8 @@ async def my_async_task(controller):
 async def main():
     controller = AbortController()
     task = asyncio.create_task(my_async_task(controller))
+    await asyncio.sleep(2.5)
+    controller.abort()
     await task
 
 if __name__ == "__main__":
