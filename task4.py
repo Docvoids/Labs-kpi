@@ -3,7 +3,7 @@ import aiofiles
 import random
 import time
 
-async def generate_large_data(filename="large_data.txt", num_lines=1000):
+async def generate_large_data(filename="large_data.txt", num_lines=10000):
     async with aiofiles.open(filename, 'w') as f:
         for i in range(num_lines):
             data = f"Data line {i}: {random.randint(0, 1000)}\n"
