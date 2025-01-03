@@ -26,8 +26,28 @@ async def use_case_promise():
     print(f"Promise: Final processed data: {processed_data}")
     print("-" * 20)
 
+async def fetch_data_async_await(item_id):
+    print(f"Async/Await: Starting to fetch data for item {item_id}")
+    await asyncio.sleep(random.uniform(1, 3))
+    result = f"Data for item {item_id}"
+    print(f"Async/Await: Successfully fetched data for item {item_id}")
+    return result
+
+async def process_data_async_await(item_id):
+    data = await fetch_data_async_await(item_id)
+    print(f"Async/Await: Processing {data}")
+    return f"Processed: {data}"
+
+async def use_case_async_await():
+    print("Async/Await Use Case:")
+    item_id = 1
+    processed_data = await process_data_async_await(item_id)
+    print(f"Async/Await: Final processed data: {processed_data}")
+    print("-" * 20)
+
 async def main():
     await use_case_promise()
+    await use_case_async_await()
 
 if __name__ == "__main__":
     asyncio.run(main())
