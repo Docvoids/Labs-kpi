@@ -91,3 +91,81 @@ class _DebouncedRunner:
     async def run(self) -> None:
         await asyncio.sleep(self.delay)
         await self.func(*self.args, **self.kwargs)
+
+async def my_async_map_callback(x: int) -> str:
+    await asyncio.sleep(0.1)
+    return f"Mapped: {x * 2}"
+
+async def my_async_filter_predicate(x: int) -> bool:
+    await asyncio.sleep(0.05)
+    return x > 3
+
+async def my_async_filter_map_callback(x: int) -> str | None:
+    await asyncio.sleep(0.08)
+    if x % 2 == 0:
+        return f"FilterMapped: {x}"
+    return None
+
+async def my_async_some_predicate(x: int) -> bool:
+    await asyncio.sleep(0.03)
+    return x == 5
+
+async def my_async_find_predicate(x: int) -> bool:
+    await asyncio.sleep(0.07)
+    return x > 4
+
+async def my_async_find_index_predicate(x: int) -> bool:
+    await asyncio.sleep(0.09)
+    return x == 3
+
+async def debounced_function(x: int) -> None:
+    print(f"Debounced function called with: {x}")
+
+@debounce(0.3)
+async def debounced_async_function(x: int) -> None:
+    print(f"Debounced async function called with: {x}")
+
+async def main():
+    data = [1, 2, 3, 4, 5]
+
+    print("--- async_map ---")
+    mapped_data = await async_map(my_async_map_callback, data)
+    print(mapped_data)
+
+    print("\n--- async_filter ---")
+    filtered_data = await async_filter(my_async_filter_predicate, data)
+    print(filtered_data)
+
+    print("\n--- async_filter_map ---")
+    filter_mapped_data = await async_filter_map(my_async_filter_map_callback, data)
+    print(filter_mapped_data)
+
+    print("\n--- async_some ---")
+    has_some = await async_some(my_async_some_predicate, data)
+    print(has_some)
+
+    print("\n--- async_find ---")
+    found_item = await async_find(my_async_find_predicate, data)
+    print(found_item)
+
+    print("\n--- async_find_index ---")
+    found_index = await async_find_index(my_async_find_index_predicate, data)
+    print(found_index)
+
+    print("\n--- debounce (synchronous function) ---")
+    debounced_sync = debounce(0.2)(lambda x: print(f"Debounced sync called with: {x}"))
+    debounced_sync(1)
+    debounced_sync(2)
+    await asyncio.sleep(0.1)
+    debounced_sync(3)
+    await asyncio.sleep(0.5)
+
+    print("\n--- debounce (asynchronous function) ---")
+    await debounced_async_function(1)
+    await debounced_async_function(2)
+    await asyncio.sleep(0.1)
+    await debounced_async_function(3)
+    await asyncio.sleep(0.5)
+
+if __name__ == "__main__":
+    asyncio.run(main())
