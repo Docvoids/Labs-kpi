@@ -59,3 +59,14 @@ async def async_find(
         if result is not None:
             return result
     return None
+
+async def async_find_index(
+    predicate: Callable[[T], Coroutine[Any, Any, bool]],
+    data: List[T]
+) -> int | None:
+    async def check(item):
+        return await predicate(item)
+    for index, item in enumerate(data):
+        if await check(item):
+            return index
+    return None
