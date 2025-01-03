@@ -70,3 +70,24 @@ async def async_find_index(
         if await check(item):
             return index
     return None
+
+def debounce(delay: float):
+    def decorator(func: Callable[..., Coroutine[Any, Any, U]]):
+        _task = None
+        async def debounced(*args: Any, **kwargs: Any) -> None:
+            nonlocal _task
+            if _task:
+                _task.cancel()
+            _task = asyncio.create_task(_DebouncedRunner(func, delay, *args, **kwargs).run())
+        return debounced
+    return decorator
+
+class _DebouncedRunner:
+    def __init__(self, func: Callable[..., Coroutine[Any, Any, U]], delay: float, *args: Any, **kwargs: Any):
+        self.func = func
+        self.delay = delay
+        self.args = args
+        self.kwargs = kwargs
+    async def run(self) -> None:
+        await asyncio.sleep(self.delay)
+        await self.func(*self.args, **self.kwargs)
